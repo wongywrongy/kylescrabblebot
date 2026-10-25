@@ -8,9 +8,11 @@ import type { BidContext, WordContext } from './strategy-market.js';
 
 const MAX_MISSING = Number(process.env.PLAN_MAX_MISSING ?? 3), WIN_RATE = Number(process.env.PLAN_WIN_RATE ?? 0.25);
 const MIN_LEN = Number(process.env.PLAN_MIN_LEN ?? 7), HYBRID = process.env.PLAN_HYBRID === '1';
+// Cash is worthless when the bag empties, so letter prices mostly act as a budget limit rather than a deduction.
+const COST_WEIGHT = Number(process.env.PLAN_COST_WEIGHT ?? 0.2);
 const PRICE = (priceData as { prices: number[][] }).prices.map(row => row.reduce((a, b) => a + b, 0) / row.length);
 const BAG = [9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1];
-export const config = { ...hold7.config, planner: { maxMissing: MAX_MISSING, winRate: WIN_RATE, minLen: MIN_LEN, hybrid: HYBRID } };
+export const config = { ...hold7.config, planner: { maxMissing: MAX_MISSING, winRate: WIN_RATE, minLen: MIN_LEN, hybrid: HYBRID, costWeight: COST_WEIGHT } };
 
 type Word = { counts: Uint8Array; score: number };
 const indexes = new WeakMap<string[], Word[]>();
@@ -37,7 +39,7 @@ function remaining(ctx: WordContext, rack: number[]): number[] {
   return prior.map(n => n * bag / total);
 }
 export function rackValue(rack: number[], ctx: WordContext, words: Word[]): number {
-  const bag = ctx.bagRemaining ?? 68, left = remaining(ctx, rack);
+  const bag = ctx.bagRemaining ?? 68, left = remaining(ctx, rack), budget = ctx.myBalance ?? 100;
   const maxAcquire = Math.max(0, Math.floor(bag * WIN_RATE));
   let best = 0;
   for (const w of words) {
@@ -51,8 +53,8 @@ export function rackValue(rack: number[], ctx: WordContext, words: Word[]): numb
       p *= Math.pow(1 - Math.pow(1 - WIN_RATE, left[i]), need);
       cost += need * PRICE[i];
     }
-    if (missing > MAX_MISSING || missing > maxAcquire || p === 0) continue;
-    const value = p * (w.score - cost);
+    if (missing > MAX_MISSING || missing > maxAcquire || p === 0 || cost > budget) continue;
+    const value = p * (w.score - COST_WEIGHT * cost);
     if (value > best) best = value;
   }
   return best;
