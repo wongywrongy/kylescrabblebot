@@ -388,6 +388,31 @@ test("target rank stops before joining another match and remains optional", () =
   assert.equal(missingStats.disconnected(), false, "an unknown rating cannot prove the target rank");
 });
 
+test("missing or null own stats produce a null rank and cannot satisfy the target", () => {
+  for (const missing of ["undefined", "null"]) {
+    const r = runner({ TARGET_RANK: "1" });
+    r.run(`conn.db.botStats.botId.find = () => ${missing}; conn.db.botStats.iter = () => [{ botId: 4n, rating: 1500 }];`);
+    assert.equal(r.run("recordLeaderboard(conn)"), null);
+    r.matches[0].status.tag = "Ended";
+    r.run("finishMatch(conn, 1n)");
+    const artifact = [...r.writes].find(([file]) => file.endsWith("/match-1.json"))!;
+    assert.equal(JSON.parse(artifact[1]).leaderboardRank, null);
+    assert.equal(r.events.find(e => e.event === "match_end")!.data.leaderboardRank, null);
+    assert.equal(r.disconnected(), false);
+  }
+});
+
+test("a genuine zero rating has a real rank and can satisfy the target", () => {
+  const r = runner({ TARGET_RANK: "1" });
+  r.run("conn.db.botStats.botId.find = () => ({ botId: 3n, rating: 0 }); conn.db.botStats.iter = () => [{ botId: 3n, rating: 0 }, { botId: 4n, rating: 10 }];");
+  assert.equal(r.run("recordLeaderboard(conn)"), 2);
+  r.run("conn.db.botStats.iter = () => [{ botId: 3n, rating: 0 }];");
+  r.matches[0].status.tag = "Ended";
+  r.run("finishMatch(conn, 1n)");
+  assert.equal(r.events.find(e => e.event === "match_end")!.data.leaderboardRank, 1);
+  assert.equal(r.disconnected(), true);
+});
+
 test("learned market requires a model, records its hash, and snapshots runtime dependencies", () => {
   assert.throws(() => runner({ STRATEGY: "learned-market" }), /MARKET_MODEL/);
   const r = runner({ STRATEGY: "learned-market", MARKET_MODEL: "runs/model.json" });

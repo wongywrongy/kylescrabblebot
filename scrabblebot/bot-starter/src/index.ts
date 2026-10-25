@@ -501,7 +501,8 @@ function recordLeaderboard(conn: DbConnection) {
   const rows = [...conn.db.botStats.iter()].sort((a, b) => b.rating - a.rating)
     .map(s => ({ ...s, name: conn.db.bot.id.find(s.botId)?.name, simulated: conn.db.bot.id.find(s.botId)?.isSimulated }));
   fs.writeFileSync(path.join(runDir, "leaderboard.json"), serialize(rows));
-  return 1 + rows.filter(s => s.rating > (conn.db.botStats.botId.find(myBotId!)?.rating ?? 0)).length;
+  const mine = conn.db.botStats.botId.find(myBotId!);
+  return mine == null ? null : 1 + rows.filter(s => s.rating > mine.rating).length;
 }
 
 function finishMatch(conn: DbConnection, matchId: bigint) {
@@ -524,7 +525,7 @@ function finishMatch(conn: DbConnection, matchId: bigint) {
   observedPoolsByMatch.delete(matchId);
   bidsByAuction.clear();
   lastWordAttemptByMatch.delete(String(matchId));
-  if (stopping || (MAX_MATCHES > 0 && completedMatches >= MAX_MATCHES) || (TARGET_RANK > 0 && result.stats !== undefined && result.leaderboardRank <= TARGET_RANK)) {
+  if (stopping || (MAX_MATCHES > 0 && completedMatches >= MAX_MATCHES) || (TARGET_RANK > 0 && result.leaderboardRank !== null && result.leaderboardRank <= TARGET_RANK)) {
     ready = false;
     disconnecting = true;
     conn.disconnect();
