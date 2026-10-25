@@ -295,6 +295,10 @@ over the selected policy on validation, but its paired interval included zero
 
 ## Tournament mode
 
+To seat ramsay in a tournament with the selected policy and automatic restarts
+on disconnect, run `bot-starter/tournament.sh <TOURNAMENT_ID>` and leave it
+running until the tournament ends; its log is `bot-starter/runs/tournament-<id>.log`.
+
 `/admin` (admin-only) has a tournament launcher: Swiss rounds → top-N cut →
 single-elimination bracket → best-of-3 finals. Match size, Swiss round
 count, and top cut are configurable. ELO ratings are updated independently

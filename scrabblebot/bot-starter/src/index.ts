@@ -38,6 +38,7 @@ import * as market from "./strategy-market.js";
 import * as learnedMarket from "./strategy-learned-market.js";
 import * as trainedMarket from "./strategy-trained-market.js";
 import * as hold7 from "./experiment-hold-word.js";
+import * as boost from "./experiment-premium-boost.js";
 import { remainingPool } from "./remaining-pool.js";
 
 const STRATEGY = process.env.STRATEGY ?? "market";
@@ -45,14 +46,14 @@ const STRATEGY = process.env.STRATEGY ?? "market";
 const BID_STRATEGY = process.env.BID_STRATEGY ?? STRATEGY;
 const WORD_STRATEGY = process.env.WORD_STRATEGY ?? STRATEGY;
 const active = [...new Set([STRATEGY, BID_STRATEGY, WORD_STRATEGY])];
-for (const s of active) if (!["baseline", "value", "montecarlo", "montecarlo-pool", "market", "learned-market", "trained-market", "hold7"].includes(s)) throw new Error("Unknown STRATEGY");
+for (const s of active) if (!["baseline", "value", "montecarlo", "montecarlo-pool", "market", "learned-market", "trained-market", "hold7", "boost"].includes(s)) throw new Error("Unknown STRATEGY");
 if (active.includes("learned-market") && !process.env.MARKET_MODEL) throw new Error("Set MARKET_MODEL for learned-market");
-if ((active.includes("trained-market") || active.includes("hold7")) && !process.env.POLICY_MODEL) throw new Error("Set POLICY_MODEL for trained-market");
+if ((active.includes("trained-market") || active.includes("hold7") || active.includes("boost")) && !process.env.POLICY_MODEL) throw new Error("Set POLICY_MODEL for trained-market");
 // VERSION labels a fresh stats series in run names and reports (e.g. v3); stats on the server stay per bot.
 const VERSION = process.env.VERSION ?? "";
 if (!/^[\w.-]*$/.test(VERSION)) throw new Error("Invalid VERSION");
-const moduleFor = (s: string) => s === "baseline" ? baseline : s.startsWith("montecarlo") ? montecarlo : s === "market" ? market : s === "learned-market" ? learnedMarket : s === "trained-market" ? trainedMarket : s === "hold7" ? hold7 : strategy;
-const sourceFor = (s: string) => new URL(s === "baseline" ? "./baseline.ts" : s.startsWith("montecarlo") ? "./strategy-montecarlo.ts" : s === "market" ? "./strategy-market.ts" : s === "learned-market" ? "./strategy-learned-market.ts" : s === "trained-market" ? "./strategy-trained-market.ts" : s === "hold7" ? "./experiment-hold-word.ts" : "./strategy.ts", import.meta.url);
+const moduleFor = (s: string) => s === "baseline" ? baseline : s.startsWith("montecarlo") ? montecarlo : s === "market" ? market : s === "learned-market" ? learnedMarket : s === "trained-market" ? trainedMarket : s === "hold7" ? hold7 : s === "boost" ? boost : strategy;
+const sourceFor = (s: string) => new URL(s === "baseline" ? "./baseline.ts" : s.startsWith("montecarlo") ? "./strategy-montecarlo.ts" : s === "market" ? "./strategy-market.ts" : s === "learned-market" ? "./strategy-learned-market.ts" : s === "trained-market" ? "./strategy-trained-market.ts" : s === "hold7" ? "./experiment-hold-word.ts" : s === "boost" ? "./experiment-premium-boost.ts" : "./strategy.ts", import.meta.url);
 const usesMonteCarlo = STRATEGY.startsWith("montecarlo");
 const usesObservedPool = active.includes("montecarlo-pool") || (active.includes("trained-market") && trainedMarket.config.observedTiles);
 const { decideBid } = moduleFor(BID_STRATEGY);
@@ -80,13 +81,14 @@ for (const s of active) if (s !== STRATEGY) fs.copyFileSync(sourceFor(s), path.j
 fs.copyFileSync(new URL("./index.ts", import.meta.url), path.join(runDir, "runner.ts"));
 fs.copyFileSync(new URL("./remaining-pool.ts", import.meta.url), path.join(runDir, "remaining-pool.ts"));
 fs.copyFileSync(new URL("./baseline.ts", import.meta.url), path.join(runDir, "baseline.ts"));
-if (active.some(s => ["market", "learned-market", "trained-market", "hold7"].includes(s))) {
+if (active.some(s => ["market", "learned-market", "trained-market", "hold7", "boost"].includes(s))) {
   fs.copyFileSync(new URL("./strategy-montecarlo.ts", import.meta.url), path.join(runDir, "strategy-montecarlo.ts"));
   fs.copyFileSync(new URL("./market-prices.json", import.meta.url), path.join(runDir, "market-prices.json"));
-  if (active.includes("learned-market") || active.includes("trained-market") || active.includes("hold7")) {
+  if (active.includes("learned-market") || active.includes("trained-market") || active.includes("hold7") || active.includes("boost")) {
     fs.copyFileSync(new URL("./strategy-market.ts", import.meta.url), path.join(runDir, "strategy-market.ts"));
   }
-  if (active.includes("trained-market") || active.includes("hold7")) {
+  if (active.includes("trained-market") || active.includes("hold7") || active.includes("boost")) {
+    fs.copyFileSync(new URL("./experiment-hold-word.ts", import.meta.url), path.join(runDir, "experiment-hold-word.ts"));
     fs.copyFileSync(new URL("./strategy-trained-market.ts", import.meta.url), path.join(runDir, "strategy-trained-market.ts"));
     fs.copyFileSync(new URL("./strategy-learned-market.ts", import.meta.url), path.join(runDir, "strategy-learned-market.ts"));
     fs.copyFileSync(process.env.POLICY_MODEL!, path.join(runDir, "policy-model.json"));

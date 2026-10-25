@@ -98,6 +98,7 @@ function runner(env: Record<string, string | undefined> = {}, holdBids = false, 
         config: { MC_K: 24, MC_LAMBDA: 0.5 },
       };
       if (name === "./strategy-trained-market.js") return { chooseWord: (ctx: any) => { decisions.word.push(ctx); return "AT"; }, decideBid: (ctx: any) => { decisions.bid.push(ctx); return 31; }, config: { priceSource: "market", futureMarkets: 32, observedTiles, policyModel: { sha256: "policy-hash" } } };
+      if (name === "./experiment-premium-boost.js") return { chooseWord: () => "BOOSTED", decideBid: () => 19, config: { cheapFactor: 0.9 } };
       if (name === "./experiment-hold-word.js") return { chooseWord: (ctx: any) => { decisions.word.push(ctx); return "HOLDING"; }, decideBid: () => 31, config: { holdUntil: 20 } };
       if (name === "./strategy-learned-market.js") return { chooseWord: () => "AT", decideBid: () => 29, config: { learnedPrices: { sha256: "trained-hash" } } };
       if (name === "./remaining-pool.js") return { remainingPool };
