@@ -1,5 +1,5 @@
 // Offline variant on top of hold-seven: scale bids for high-face letters, and spend remaining cash in the last auctions.
-import * as base from './experiment-hold-word.js';
+import * as base from './experiment-gain-policy.js'; // defaults to the frozen parameters unless GAIN_PARAMS is set
 import { LETTER_VALUE, wordScore } from './strategy-trained-market.js';
 import * as market from './strategy-market.js';
 import { createRequire } from 'node:module';
