@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { chooseWord, wordTimingExperiment, wordScore } from './experiment-wordtiming.js';
+const rack=(s:string)=>new Map([...new Set(s)].map(c=>[c,[...s].filter(x=>x===c).length]));
+test('conditional waiting preserves cash and endgame triggers and requires a true extension',()=>{
+ const ctx={myRack:rack('EXITED'),dictionary:['EXITED','EXISTED'],myBalance:100,bagRemaining:40};
+ assert.equal(wordScore('EXITED'),35);assert.equal(wordScore('EXISTED'),45);
+ wordTimingExperiment.mode='conditional';
+ assert.equal(chooseWord(ctx),null);
+ assert.equal(chooseWord({...ctx,myBalance:30}),null);
+ assert.equal(chooseWord({...ctx,myBalance:29}),'EXITED');
+ assert.equal(chooseWord({...ctx,bagRemaining:15}),'EXITED');
+ assert.equal(chooseWord({...ctx,dictionary:['EXITED','EXITING']}),'EXITED');
+ assert.equal(chooseWord({...ctx,dictionary:['EXITED']}),'EXITED');
+ assert.equal(chooseWord({...ctx,myRack:rack('EXISTED')}),'EXISTED');
+ assert.equal(ctx.myRack.get('E'),2);
+ wordTimingExperiment.mode='hold7';
+ assert.equal(chooseWord({...ctx,myBalance:29}),null);
+ assert.equal(chooseWord({...ctx,myBalance:9}),'EXITED');
+ assert.equal(chooseWord({...ctx,bagRemaining:15}),'EXITED');
+});

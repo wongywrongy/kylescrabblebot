@@ -1,0 +1,3 @@
+[submodule "research/seal-agentic-finance"]
+	path = research/seal-agentic-finance
+	url = https://github.com/abhinavg6/seal-agentic-finance.git

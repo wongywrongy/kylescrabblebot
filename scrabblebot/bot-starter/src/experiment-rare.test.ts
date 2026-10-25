@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { decideBid, rareExperiment } from './experiment-rare.js';
+const rack=(s:string)=>new Map([...new Set(s)].map(c=>[c,[...s].filter(x=>x===c).length]));
+test('rare policies change only the speculative rare-letter bid',()=>{
+ const ctx={myRack:rack('AEORT'),dictionary:[] as string[],myBalance:100,bagRemaining:40,letter:'X'};
+ rareExperiment.mode='face2';assert.equal(decideBid(ctx),25);
+ rareExperiment.mode='strong';assert.equal(decideBid(ctx),32);
+ assert.equal(decideBid({...ctx,letter:'Q'}),38);
+ assert.equal(decideBid({...ctx,myRack:rack('BCDFG')}),1);
+ assert.equal(decideBid({...ctx,myRack:rack('AEI')}),1);
+ assert.equal(decideBid({...ctx,myBalance:20}),20);
+ assert.equal(decideBid({...ctx,letter:'F'}),17);
+ rareExperiment.mode='strongQGuard';assert.equal(decideBid({...ctx,letter:'Q'}),1);
+ assert.equal(decideBid({...ctx,myRack:rack('AEIRT'),letter:'Q'}),38);
+ assert.equal(decideBid({...ctx,myRack:rack('ERTYS'),dictionary:['QWERTYS'],letter:'Q'}),51);
+ rareExperiment.mode='face4';assert.equal(decideBid(ctx),40);
+ assert.equal(decideBid({...ctx,letter:'Q'}),48);
+ rareExperiment.mode='flat40';assert.equal(decideBid({...ctx,letter:'Q'}),40);
+ rareExperiment.mode='face2';
+});

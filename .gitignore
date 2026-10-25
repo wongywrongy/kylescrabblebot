@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+.envrc
+.aws/
+.agents/
+.codex/
+node_modules/
+dist/
+target/
+__pycache__/
+.venv*/
+.token-*
+*.log
+.DS_Store
+research/awesome-quant-ai/

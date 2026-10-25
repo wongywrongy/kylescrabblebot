@@ -1,0 +1,376 @@
+{
+  "updatedAt": "2026-10-24T10:26:10.494592+00:00",
+  "method": "Paired fixed-opponent replays; opponent reactions and spending changes are not modeled. Sample sets differ between experiments. Live logs are authoritative for actual outcomes.",
+  "experiments": [
+    {
+      "name": "targeted_two_tile_premium",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 89.3,
+      "delta": 5.0,
+      "status": "live_trial_complete",
+      "note": "Promising paired replay; first live batch68,54,59 did not establish an improvement."
+    },
+    {
+      "name": "dual_multiplier_pacing",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 70.5,
+      "delta": -13.8,
+      "status": "reject",
+      "note": "Even epsilon tuning lost to the control on chronological holdout."
+    },
+    {
+      "name": "linear_spend_down_k3",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 44.0,
+      "delta": -40.3,
+      "status": "reject",
+      "note": "Per-auction spending targets were too low to win useful letters early."
+    },
+    {
+      "name": "frontload_literal_formula",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 65.5,
+      "delta": -18.8,
+      "status": "reject",
+      "note": "Opening bids remained below market prices; score at auction20 was zero."
+    },
+    {
+      "name": "immediate_short_words",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 34.9,
+      "delta": -49.4,
+      "status": "reject",
+      "note": "Destroyed length bonuses; uncapped-bid control also scored34.0."
+    },
+    {
+      "name": "completion_only_hold6",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 37.3,
+      "delta": -47.0,
+      "status": "reject",
+      "note": "Stranded cash by refusing useful incomplete-word purchases."
+    },
+    {
+      "name": "paid_price_prediction",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 83.3,
+      "delta": -1.0,
+      "status": "reject",
+      "note": "Chronological price fitting; no consistent improvement."
+    },
+    {
+      "name": "opponent_threshold_prediction",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 68.8,
+      "delta": -15.5,
+      "status": "reject",
+      "note": "Higher acquisition thresholds increased spending without adequate words."
+    },
+    {
+      "name": "opponent_threshold_cap",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 84.5,
+      "delta": 0.2,
+      "status": "defer",
+      "note": "Changed only2matches: +3 and-1. Too small for extra model/context."
+    },
+    {
+      "name": "vowel_ratio_controller",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 78.6,
+      "delta": -5.7,
+      "status": "reject",
+      "note": "Rack ratio alone did not improve scoring."
+    },
+    {
+      "name": "leader_paid_price_copy",
+      "matches": 10,
+      "baselineMean": 84.3,
+      "candidateMean": 80.7,
+      "delta": -3.6,
+      "status": "reject",
+      "note": "Earlier public leader prices did not transfer reliably to our rack."
+    },
+    {
+      "name": "immediate_cashflow_floor_0_6",
+      "matches": 13,
+      "baselineMean": 85.38,
+      "candidateMean": 84.0,
+      "delta": -1.38,
+      "status": "reject",
+      "note": "Fixed some completion underbids but caused larger losses elsewhere."
+    },
+    {
+      "name": "generic_face_weight_2_5",
+      "matches": 14,
+      "baselineMean": 84.21,
+      "candidateMean": 83.07,
+      "delta": -1.14,
+      "status": "possible_live_trial",
+      "note": "Training worse; four-match holdout71.5->74.25. Modest uncertain signal."
+    },
+    {
+      "name": "lower_premium_threshold_42",
+      "matches": 15,
+      "baselineMean": null,
+      "candidateMean": null,
+      "delta": null,
+      "status": "reject",
+      "note": "Training+1.7 entirely one match; five-match holdout unchanged68.0."
+    },
+    {
+      "name": "rare_base_3face_plus8",
+      "matches": 16,
+      "baselineMean": 79.9375,
+      "candidateMean": 80.3125,
+      "delta": 0.375,
+      "status": "live_trial_running",
+      "note": "Training89.3->86.8; six-match holdout64.333->69.5. Rare buys1->5."
+    },
+    {
+      "name": "exact_opponent_rack_blocking",
+      "matches": 0,
+      "baselineMean": null,
+      "candidateMean": null,
+      "delta": null,
+      "status": "unsupported",
+      "note": "Five hidden starting tiles prevent exact rack reconstruction."
+    },
+    {
+      "name": "first_price_shading_model",
+      "matches": 0,
+      "baselineMean": null,
+      "candidateMean": null,
+      "delta": null,
+      "status": "untested",
+      "note": "Captured matches were Vickrey; no FirstPrice evidence."
+    },
+    {
+      "name": "face25_public297",
+      "matches": 99,
+      "racksPerMatch": 3,
+      "baselineMean": 66.43,
+      "candidateMean": 69.1,
+      "status": "live_trial_complete",
+      "note": "Live scores56,76,79; rating1144. Paired public replay advantage did not establish live superiority."
+    },
+    {
+      "name": "word_target_planner_public99",
+      "matches": 99,
+      "baselineMean": 68.23,
+      "candidateMean": 58.02,
+      "status": "reject",
+      "note": "Strands cash; adding baseline bid floor only67.75."
+    },
+    {
+      "name": "fast_montecarlo",
+      "matches": 99,
+      "candidateMean": 74.8485,
+      "status": "live_validation_running",
+      "note": "First live78,72,67 (third,third,fourth), rating1161rank25.24rollouts,lambda.5. Next6 keepstrategyunchanged andfixstalebids."
+    },
+    {
+      "name": "montecarlo_credit_word_income",
+      "matches": 99,
+      "baselineMean": 74.8485,
+      "candidateMean": 60.7475,
+      "status": "reject",
+      "note": "Premature word liquidation reduced long-word bonuses."
+    },
+    {
+      "name": "montecarlo_lambda035",
+      "matches": 99,
+      "baselineMean": 74.8485,
+      "candidateMean": 75.8182,
+      "status": "reject_for_deployment",
+      "note": "Fresh139 gives+0.36score butworsemeanplace4.45vs4.27 andfewerdiagnosticTOP3finishes26.6%vs33.1%."
+    },
+    {
+      "name": "montecarlo_common_floor10",
+      "matches": 99,
+      "baselineMean": 74.8485,
+      "candidateMean": 76.8687,
+      "status": "temporal_consistency_running",
+      "note": "Predeclaredcommon-onlyfloorwithduplicatepenalty; no parametergrid."
+    },
+    {
+      "name": "bid_revaluation_after_words",
+      "status": "live_validation_running",
+      "note": "62/82ownwordtransactionschangedcorrectbidwithtimeleft. Fixedstate-signature/acknowledgedamount/pendingdedup; simulationbenefitnotyetknown.",
+      "artifact": "scrabblebot/bot-starter/runs/research-stale-bids.json"
+    },
+    {
+      "name": "montecarlo_pool",
+      "status": "live_18_complete",
+      "exploratoryMeanGain": 2.62,
+      "validationMeanGain": 5.19,
+      "untouchedMeanGain": 1.25,
+      "combinedValidationMatches": 294,
+      "combinedValidationGain": 3.11,
+      "note": "First6 live games mean82.83,2wins. Continuing with targetRank1.",
+      "firstBatchScores": [
+        67,
+        70,
+        68,
+        66,
+        102,
+        124
+      ],
+      "liveMatches": 18,
+      "liveWins": 5,
+      "liveMeanScore": 84.5
+    },
+    {
+      "name": "montecarlo_market_rollout",
+      "status": "reached_leaderboard_first",
+      "exploratoryMeanGain": 2.92,
+      "validationMeanGain": 3.83,
+      "untouchedMeanGain": 3.37,
+      "note": "Includes simulated acquisitioncost and wordincome; latestmeanplacement improves butwin count7to5, so no rank1 guarantee.",
+      "firstBatchScores": [
+        81,
+        81,
+        119,
+        72,
+        62,
+        102
+      ],
+      "firstBatchWins": 2,
+      "finalRunScores": [
+        72,
+        125,
+        91
+      ],
+      "finalRunWins": 2
+    },
+    {
+      "name": "montecarlo_win015",
+      "status": "reject",
+      "matches": 99,
+      "baselineMean": 74.8485,
+      "candidateMean": 74.8182,
+      "note": "Fewer purchases and more strandedcash; no gain."
+    },
+    {
+      "name": "conservative_endgame_blocking",
+      "status": "reject_current_priority",
+      "matches": 40,
+      "note": "No demonstrated recoverableownwins in95eligibleendgamebid0/cashcontexts."
+    },
+    {
+      "name": "inferred_opponent_initial_tiles",
+      "status": "defer_insufficient_score_evidence",
+      "matches": 45,
+      "baselineMean": 77.02,
+      "candidateMean": 77.96,
+      "paired95Interval": [
+        -3.13,
+        5.0
+      ],
+      "note": "Public prefix inference identifies about21of25initialtiles byround60, but long-word count unchanged and score gain uncertain. No production promotion."
+    },
+    {
+      "name": "hold_low_score_seven_letter_words",
+      "status": "reject_no_material_gain",
+      "matches": 99,
+      "baselineMean": 74.85,
+      "candidateMean": 74.91,
+      "note": "Only1of99replays changed; extra rule not promoted."
+    }
+  ],
+  "evidenceDirectory": "../scrabblebot/bot-starter/runs",
+  "opponentEvidence": "../scrabblebot/bot-starter/runs/opponent-analysis.json",
+  "actualResults": "../scrabblebot/bot-starter/runs/summary.json",
+  "objective": "Reached first place at 2026-10-24T10:17:16.876Z",
+  "latestLive": {
+    "match": "1182",
+    "score": 91,
+    "place": 1,
+    "rating": 1456,
+    "rankAtAchievement": 1,
+    "laterObservedRank": 3
+  },
+  "verifiedRules": {
+    "bagTiles": 98,
+    "startingRack": 5,
+    "startingCash": 100,
+    "defaultPlayers": 6,
+    "leaderboard": "raw bot_stats.rating; sequential pairwise Elo K32",
+    "archivedTopBids": "public only after match",
+    "hiddenInitialOpponentTiles": 25,
+    "unbidTile": "consumed in server source",
+    "finalAuctionTile": "cannotbeplayedbeforematchends"
+  },
+  "milestones": [
+    {
+      "match": "901",
+      "result": "First win",
+      "score": 104,
+      "rating": 1271,
+      "rank": 13
+    },
+    {
+      "match": "1008",
+      "result": "Top3",
+      "score": 82,
+      "rating": 1385,
+      "rank": 3
+    }
+  ],
+  "goalResult": {
+    "objective": "Reach top of the leaderboard",
+    "achievement": "Reached first place; this is a point-in-time result, not a claim of permanent rank",
+    "bot": "ramsay",
+    "botId": "26",
+    "achievedAt": "2026-10-24T10:17:16.876Z",
+    "matchId": "1182",
+    "rating": 1456,
+    "rankAtAchievement": 1,
+    "matchScore": 91,
+    "strategy": "market",
+    "stoppedAtTarget": true,
+    "winningRun": "runs/2026-10-24T10-13-44.338Z-market",
+    "leaderboardEvidence": "runs/2026-10-24T10-13-44.338Z-market/leaderboard.json",
+    "sourceHash": "6fdab40aaf37a2dc137abb4fdaea9d51ead8600a37d26823252f695f2debea91",
+    "runnerHash": "96c4cebc9392b055a53c092fd7af5af16c8b5f7387961dd36e7c8b83cb80d4a5",
+    "config": {
+      "MC_K": 24,
+      "MC_LAMBDA": 0.5,
+      "MC_PRICE": 13,
+      "MC_WIN": 0.25,
+      "MC_END": 5,
+      "MC_PACE": 0.5,
+      "MC_PACE_MAX": 2.5,
+      "futureMarkets": 8,
+      "priceSearchSteps": 6,
+      "marketPrices": {
+        "source": "runs/public-history.json",
+        "capturedAt": "2026-10-24T07:58:20.851Z",
+        "historySha256": "f94c84d7baa9e7ffbe64798dcdc3573720dd3c272cd142e4bab7abfcd6a7f8b5",
+        "firstMatch": 400,
+        "lastMatch": 599,
+        "quoteCount": 13600,
+        "trainingQuoteSha256": "13703e7e4741a8a88eb67091f6d309e497060732f6d172683490fc812a29868c",
+        "pricesSha256": "6201401ffceae7ed260d748bcfdefc8d4f061ba7c5622b1566b8b5f903550a95",
+        "quoteOrder": "Original auctions array order; missing topBid maps to0; no sorting or deduplication"
+      }
+    },
+    "subsequentVerification": {
+      "capturedAt": "2026-10-24T10:22:45.577Z",
+      "rank": 3,
+      "rating": 1456,
+      "otherBotsContinuedPlaying": true
+    },
+    "validation": "Production tests and TypeScript build passed; score/cash accounting checked by report; no reducer failures in final run."
+  }
+}
