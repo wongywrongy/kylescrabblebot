@@ -16,6 +16,7 @@ const dictionary = fs.readFileSync('../spacetimedb/wordlist.txt', 'utf8').split(
 for (const m of modules.values()) m.chooseWord({ dictionary, myRack: new Map() });
 const BAG = 'A9B2C2D4E12F2G3H2I9J1K1L4M2N6O8P2Q1R6S4T6U4V2W2X1Y2Z1'.match(/[A-Z]\d+/g)!.flatMap(x => [...x[0].repeat(Number(x.slice(1)))]);
 function rng(seed: number) { let s = seed >>> 0; return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 2 ** 32; }; }
+const TRACE = process.env.TRACE_OUT ? fs.createWriteStream(process.env.TRACE_OUT) : null;
 const totals = seats.map(() => ({ score: 0, place: 0, wins: 0, bottom2: 0, tiles: 0, spent: 0 }));
 for (let g = 0; g < MATCHES; g++) {
   const random = rng(SEED * 100003 + g);
@@ -27,7 +28,7 @@ for (let g = 0; g < MATCHES; g++) {
   for (const r of racks) { for (let n = 0; n < 5; n++) { const c = pool.pop()!; r.set(c, (r.get(c) ?? 0) + 1); } initial.push(new Map(r)); }
   const balance = order.map(() => 100), score = order.map(() => 0), tiles = order.map(() => 0), spent = order.map(() => 0);
   const auctions = pool.splice(0, 68);
-  const drawn: string[] = [];
+  const drawn: string[] = [], trace: any[] = [];
   for (let i = 0; i < auctions.length; i++) {
     const letter = auctions[i], bagRemaining = auctions.length - i - 1;
     drawn.push(letter);
@@ -40,6 +41,7 @@ for (let g = 0; g < MATCHES; g++) {
         const reward = wordScore(word); score[k] += reward; balance[k] += reward;
       }
       const opponentBalances = balance.filter((_, j) => j !== k);
+      if (TRACE) { const rack = Array(26).fill(0); for (const [c, n] of racks[k]) rack[c.charCodeAt(0) - 65] = n; trace.push({ k, rack, cash: balance[k], bag: bagRemaining, score: score[k], opp: opponentBalances.reduce((a, b) => a + b, 0) / 5, letter }); }
       const bid = mod.decideBid({ dictionary, myRack: racks[k], myBalance: balance[k], bagRemaining, remainingLetters, letter, auctionType: 'Vickrey', opponentBalances });
       if (!Number.isInteger(bid) || bid < 0 || bid > balance[k]) throw new Error(`${seats[seat]} bid ${bid} with ${balance[k]}`);
       return bid;
@@ -55,6 +57,7 @@ for (let g = 0; g < MATCHES; g++) {
   }
   // Final word plays with the bag empty.
   order.forEach((seat, k) => { const mod = modules.get(seats[seat]); let word: string | null; while ((word = mod.chooseWord({ dictionary, myRack: racks[k], myBalance: balance[k], bagRemaining: 0 }))) { for (const c of word) racks[k].set(c, racks[k].get(c)! - 1); const reward = wordScore(word); score[k] += reward; balance[k] += reward; } });
+  if (TRACE) for (const r of trace) TRACE.write(JSON.stringify({ ...r, final: score[r.k], place: 1 + score.filter(s => s > score[r.k]).length }) + '\n');
   order.forEach((seat, k) => { const place = 1 + score.filter(s => s > score[k]).length; const t = totals[seat]; t.score += score[k]; t.place += place; t.wins += Number(place === 1); t.bottom2 += Number(place >= 5); t.tiles += tiles[k]; t.spent += spent[k]; });
 }
 const summary = seats.map((f, i) => ({ seat: i, policy: f, meanScore: +(totals[i].score / MATCHES).toFixed(2), meanPlace: +(totals[i].place / MATCHES).toFixed(3), winRate: +(totals[i].wins / MATCHES).toFixed(3), bottom2Rate: +(totals[i].bottom2 / MATCHES).toFixed(3), tiles: +(totals[i].tiles / MATCHES).toFixed(1), spent: +(totals[i].spent / MATCHES).toFixed(0) }));
