@@ -44,6 +44,7 @@ for (let g = 0; g < MATCHES; g++) {
       if (TRACE) { const rack = Array(26).fill(0); for (const [c, n] of racks[k]) rack[c.charCodeAt(0) - 65] = n; trace.push({ k, rack, cash: balance[k], bag: bagRemaining, score: score[k], opp: opponentBalances.reduce((a, b) => a + b, 0) / 5, letter }); }
       const bid = mod.decideBid({ dictionary, myRack: racks[k], myBalance: balance[k], bagRemaining, remainingLetters, letter, auctionType: 'Vickrey', opponentBalances });
       if (!Number.isInteger(bid) || bid < 0 || bid > balance[k]) throw new Error(`${seats[seat]} bid ${bid} with ${balance[k]}`);
+      if (TRACE) { const r = trace[trace.length - 1]; r.bid = bid; r.pol = path.basename(seats[seat], '.ts'); }
       return bid;
     });
     const top = Math.max(...bids);
